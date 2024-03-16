@@ -12,7 +12,7 @@ export const Input: FC<InputProps> = ({label, ...props}) => {
 
     return(
         <div
-            className="flex flex-col gap-1 text-sm lg:text-lg md:text-md"
+            className="flex flex-col gap-1 text-sm lg:text-md"
         >
             <label
             >
@@ -20,7 +20,7 @@ export const Input: FC<InputProps> = ({label, ...props}) => {
             </label>
             <input 
                 {...props}
-                className="w-full h-9 p-2 rounded-lg border-2 border-background_dark/20 focus:outline-none focus:ring-2 focus:ring-accent_light/20
+                className="w-full h-9 px-2 py-4 rounded-lg border-b-1 border-background_dark/20 focus:outline-none focus:ring-2 focus:ring-accent_light/20
                 dark:border-text_dark dark:focus:ring-accent_dark/20
                 "
             />
