@@ -9,6 +9,51 @@ doteEnvConfig;
 // config
 
 export class Autheticated {
+  static async signUp(req: Request, res: Response) {
+    let { data } = req.body;
+
+    if (data) {
+      console.log({ data })
+
+      data = {
+        ...data,
+        user_password: md5(data.user_password)
+      }
+
+      const existingUser = await knex('users').where('user_email', data.user_email).first().then((response) => {
+        if (!response) {
+          return true
+        }
+        return false
+      })
+
+      if (existingUser) {
+        const userKnex = await knex('users').insert(data).returning('*').then((response) => {
+          return response[0]
+        })
+        const secretKey: string =
+          typeof process.env.API_KEY == "string" ? process.env.API_KEY : "";
+          console.log({secretKey},{userKnex})
+        const token = jwt.sign(userKnex, secretKey);
+
+        return res.status(200).send(
+          {
+            message: 'Usuario criado com suceeso',
+            token: token
+          }
+        )
+      }
+
+      return res.status(409).send(
+        {
+          message: "Ops, Já existe cadastro com esse usuário"
+        }
+      )
+    }
+
+    return res.sendStatus(400)
+  }
+
   static async login(req: Request, res: Response) {
     const response: {
       status: number;
@@ -88,7 +133,6 @@ export class Autheticated {
           .catch((e) => {
             console.error(e);
           });
-        console.log({ menus });
         const secretKey: string =
           typeof process.env.API_KEY == "string" ? process.env.API_KEY : "";
         const token = jwt.sign(user, secretKey);

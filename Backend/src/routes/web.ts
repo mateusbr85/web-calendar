@@ -16,6 +16,10 @@ authRouter.use(async (req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
+authRouter.post('/signup', async (req: Request, res: Response) => {
+    await Autheticated.signUp(req,res)
+})
+
 authRouter.post('/authenticated', async (req: Request, res: Response) => {
     await Autheticated.login(req, res)
 })

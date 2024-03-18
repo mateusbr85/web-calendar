@@ -2,14 +2,63 @@ import { Button } from "../components/formFields/Button"
 import { Input } from "../components/formFields/Input";
 import Logo from "../assets/logo.png"
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Axios } from "../utils/axios";
+import { toast, ToastContainer } from 'react-toastify';
 
 export const LoginSignUp = () => {
     const location = useLocation();
+    const [formValues,setFormValues] = useState(
+        {
+            user_text_name: '',
+            user_email: '',
+            user_password: ''
+        }
+    )
+    const [loading, setLoading] = useState(false)
+
+    const setFormValuesLogin = ({field,value}: {field: string, value: any}) => {
+        return setFormValues({ ...formValues, [`${field}`]: value })
+    }
+
+    const createUser = () => {
+        setLoading(true)
+        Axios.post('/api/auth/signup', {data: formValues})
+        .then((response) => {
+            toast.success(
+                response.data.message,
+                {
+                    position: 'top-right',
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    theme: 'colored'
+                }
+            )
+
+            localStorage.setItem('token',response.data.token)
+
+            // setTimeout(() => {
+            //     navigate('/dashboard')
+            //   },2500)
+        })
+        .catch((err) => {
+            toast.error(err.response.data.message,{
+                position: 'top-right',
+                autoClose: 2000,
+                hideProgressBar: false,
+                theme: 'colored'
+            })
+        })
+        .finally(() => {
+            setLoading(false)
+        })
+    }
 
     return (
         <div
             className=""
         >
+            <ToastContainer/>
             <body className="bg-background_light max-h-screen
                 px-8 p-32  flex flex-col justify-center
                 lg:px-20 lg:min-h-screen
@@ -54,15 +103,19 @@ export const LoginSignUp = () => {
                                 <Input
                                     label="Nome Completo"
                                     placeholder="Insira seu nome"
+                                    onBlur={(event) => setFormValuesLogin({field: 'user_text_name', value: event.target.value})}
                                 />
                                 <Input
                                     label="E-mail"
                                     placeholder="Insira seu endereço de email"
+                                    type="email"
+                                    onBlur={(event) => setFormValuesLogin({field: 'user_email', value: event.target.value})}
                                 />
                                 <Input
                                     label="Senha"
                                     placeholder="Sua senha...."
                                     type="password"
+                                    onBlur={(event) => setFormValuesLogin({field: 'user_password', value: event.target.value})}
                                 />
                                 <p
                                     className="text-xs text-text_light/50"
@@ -70,7 +123,8 @@ export const LoginSignUp = () => {
                                     Use o e-mail que foi cadastrado
                                 </p>
                                 <Button
-
+                                    onClick={createUser}
+                                    isLoading={loading}
                                 >
                                     Criar Conta
                                 </Button>

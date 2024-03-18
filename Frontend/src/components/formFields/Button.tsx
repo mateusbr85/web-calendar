@@ -5,10 +5,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     heigth?: string,
     // colorButton?: string
     variant?: 'primary' | 'secondary' | 'outline',
-    hrefButton?: string
+    hrefButton?: string,
+    isLoading?: boolean
 }
 
-export const Button: React.FC<ButtonProps> = ({ children, hrefButton = '', variant = 'primary', ...props }) => {
+export const Button: React.FC<ButtonProps> = ({ children, hrefButton = '', variant = 'primary', isLoading = false, ...props }) => {
     const [variantButton, setVariantButton] = useState(
         {
             text_color: 'text-background_light',
@@ -45,28 +46,67 @@ export const Button: React.FC<ButtonProps> = ({ children, hrefButton = '', varia
     }, [children, variant])
 
     return (
-        <a href={hrefButton}>
-            <button
-                {...props}
-                className={`
-                    max-w-screen-md max-h-screen ${variantButton.bg_color} ${variantButton.text_color} ${variantButton.outline} rounded-md
-                    dark:bg-primary_dark dark:text-background_light
-                    flex
-                    items-center
-                    justify-center
-                    container mx-auto
-                    p-2
-                    drop-shadow-md
-                `}
-            >
-                <div
-                    className='text-sm
-                            lg:text-md
-                        '
+        <>
+            {hrefButton !== '' ? (
+                <a href={hrefButton}>
+                    <button
+                        {...props}
+                        className={`
+                            max-w-screen-md max-h-screen ${variantButton.bg_color} ${variantButton.text_color} ${variantButton.outline} rounded-md
+                            dark:bg-primary_dark dark:text-background_light
+                            flex
+                            items-center
+                            justify-center
+                            container mx-auto
+                            p-2
+                            drop-shadow-md
+                        `}
+                    >
+                        <div
+                            className='text-sm
+                                    lg:text-md
+                                '
+                        >
+                            {isLoading ? (
+                                <i className="fas fa-spinner fa-pulse"></i>
+                            ) : (
+                                <>
+                                    {children}
+                                </>
+                            )}
+                        </div>
+                    </button>
+                </a>
+
+            ) : (
+                <button
+                    {...props}
+                    className={`
+                            max-w-screen-md max-h-screen ${variantButton.bg_color} ${variantButton.text_color} ${variantButton.outline} rounded-md
+                            dark:bg-primary_dark dark:text-background_light
+                            flex
+                            items-center
+                            justify-center
+                            container mx-auto
+                            p-2
+                            drop-shadow-md
+                        `}
                 >
-                    {children}
-                </div>
-            </button>
-        </a>
+                    <div
+                        className='text-sm
+                                    lg:text-md
+                                '
+                    >
+                        {isLoading ? (
+                            <i className="fas fa-spinner fa-pulse"></i>
+                        ) : (
+                            <>
+                                {children}
+                            </>
+                        )}
+                    </div>
+                </button>
+            )}
+        </>
     )
 }

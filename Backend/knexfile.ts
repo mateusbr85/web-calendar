@@ -5,7 +5,10 @@ doteEnvConfig
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: "postgresql",
-    connection: 'postgres://hjkmfnbp:spyzY7th0wWvCKE1JcG_-vGB4Ji71JTz@silly.db.elephantsql.com/hjkmfnbp',
+    connection: {
+      connectionString: 'postgres://dbtoken_user:5MvkGJbyhcocu0lloCooNOTFHJjU4wdI@dpg-cnqetvmn7f5s73878d40-a.oregon-postgres.render.com/dbtoken',
+      ssl: { rejectUnauthorized: false }, // Adicione a opção de SSL aqui
+    },
     pool: {
       min: 2,
       max: 10
@@ -13,11 +16,15 @@ const config: { [key: string]: Knex.Config } = {
     migrations: {
       tableName: "knex_migrations",
       directory: "./src/database/migrations"
-    }
+    },
+
   },
   production: {
     client: "postgresql",
-    connection: 'postgres://hjkmfnbp:spyzY7th0wWvCKE1JcG_-vGB4Ji71JTz@silly.db.elephantsql.com/hjkmfnbp',
+    connection: {
+      connectionString: 'postgres://dbtoken_user:5MvkGJbyhcocu0lloCooNOTFHJjU4wdI@dpg-cnqetvmn7f5s73878d40-a.oregon-postgres.render.com/dbtoken',
+      ssl: { rejectUnauthorized: false }, // Adicione a opção de SSL aqui
+    },
     pool: {
       min: 2,
       max: 10
@@ -30,4 +37,4 @@ const config: { [key: string]: Knex.Config } = {
 
 };
 
-module.exports = config;
+export default config;

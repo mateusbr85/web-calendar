@@ -38,7 +38,7 @@ app.use(async(error: any, req: Request, res: Response, next: NextFunction) => {
     return res.status(error.httpCode !== undefined ? error.httpCode : 404).json({ title: error.name, error: isJson(error.message), location: error.stack, id_error: idError[0].query_log_error_id });
 });
 
-swaggerDocs(app, process.env.port)
+// swaggerDocs(app, process.env.port)
 
 
 export default app;
