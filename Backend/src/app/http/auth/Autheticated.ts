@@ -33,13 +33,18 @@ export class Autheticated {
         })
         const secretKey: string =
           typeof process.env.API_KEY == "string" ? process.env.API_KEY : "";
-          console.log({secretKey},{userKnex})
         const token = jwt.sign(userKnex, secretKey);
+
 
         return res.status(200).send(
           {
             message: 'Usuario criado com suceeso',
-            token: token
+            // token: token,
+            response: {token, user: {
+              user_email: userKnex["user_email"],
+              user_text_name: userKnex["user_text_name"],
+              user_id: userKnex["user_id"],
+            }}
           }
         )
       }
@@ -95,54 +100,54 @@ export class Autheticated {
         menus?: Record<string, any> | void;
       } = { user: {}, menus: {} };
       if (user.exist == true && user.data?.user_active == true) {
-        const modules = await knex("modules")
-          .where("module_fk_user_type_id", user.data?.user_fk_user_type_id)
-          .then((res) => {
-            return res;
-          })
-          .catch((e) => {
-            console.error(e);
-          });
-        const menuByModule = await knex("sub_menus")
-          .where("sub_menu_fk_menu_id", null)
-          .then((res) => {
-            return res;
-          })
-          .catch((e) => {
-            console.error(e);
-          });
-        const menus = await knex("menus")
-          .where("menu_active", true)
-          .andWhere(
-            "menu_type_client_fk_user_type_id",
-            user.data?.user_fk_user_type_id
-          )
-          .orderBy("menu_order", "asc")
-          .then(async (res) => {
-            const mergeObjects: any = [];
-            for (const i in res) {
-              const subMenus = await knex('sub_menus').where('sub_menu_fk_menu_id', res[i].menu_id).then((res) => {
-                return res;
-              }).catch((err) => {
-                console.log(err)
-              })
-              mergeObjects.push({ ...res[i], sub_menus: subMenus })
-            }
-            return mergeObjects;
-          })
-          .catch((e) => {
-            console.error(e);
-          });
+        // const modules = await knex("modules")
+        //   .where("module_fk_user_type_id", user.data?.user_fk_user_type_id)
+        //   .then((res) => {
+        //     return res;
+        //   })
+        //   .catch((e) => {
+        //     console.error(e);
+        //   });
+        // const menuByModule = await knex("sub_menus")
+        //   .where("sub_menu_fk_menu_id", null)
+        //   .then((res) => {
+        //     return res;
+        //   })
+        //   .catch((e) => {
+        //     console.error(e);
+        //   });
+        // const menus = await knex("menus")
+        //   .where("menu_active", true)
+        //   .andWhere(
+        //     "menu_type_client_fk_user_type_id",
+        //     user.data?.user_fk_user_type_id
+        //   )
+        //   .orderBy("menu_order", "asc")
+        //   .then(async (res) => {
+        //     const mergeObjects: any = [];
+        //     for (const i in res) {
+        //       const subMenus = await knex('sub_menus').where('sub_menu_fk_menu_id', res[i].menu_id).then((res) => {
+        //         return res;
+        //       }).catch((err) => {
+        //         console.log(err)
+        //       })
+        //       mergeObjects.push({ ...res[i], sub_menus: subMenus })
+        //     }
+        //     return mergeObjects;
+        //   })
+        //   .catch((e) => {
+        //     console.error(e);
+        //   });
         const secretKey: string =
           typeof process.env.API_KEY == "string" ? process.env.API_KEY : "";
-        const token = jwt.sign(user, secretKey);
+        const token = jwt.sign(user.data, secretKey);
         userResponse.user = {
           user_email: user.data["user_email"],
           user_text_name: user.data["user_text_name"],
           user_id: user.data["user_id"],
         };
 
-        userResponse.menus = { menus, modules, menuByModule };
+        // userResponse.menus = { menus, modules, menuByModule };
         response.success = "Login realizado com sucesso!";
         response.data = { ...userResponse, token };
       }
@@ -157,7 +162,7 @@ export class Autheticated {
 
     return res.status(response.status).send({
       error: response.error,
-      success: response.success,
+      message: response.success,
       response: response.data,
     });
   }
@@ -184,8 +189,8 @@ export class Autheticated {
       const user: { data?: Record<string, any>; exist: boolean } = await knex(
         "users"
       )
-        .where("user_email", decode.data["user_email"])
-        .andWhere("user_password", decode.data["user_password"])
+        .where("user_email", decode["user_email"])
+        .andWhere("user_password", decode["user_password"])
         .then((res) => {
           if (res == undefined) {
             response.error?.push("e-mail ou senha incorretas");
@@ -204,17 +209,17 @@ export class Autheticated {
             exist: false,
           };
         });
-
       if (user.exist == true) {
         response.data = { isAuth: true };
       }
     }
 
-    if (response.error.length > 0) {
+    if (response.error.length >= 1) {
       response.status = 419;
     }
 
-    return res.status(200).send({
+
+    return res.status(response.status).send({
       error: response.error,
       success: response.success,
       response: response.data,

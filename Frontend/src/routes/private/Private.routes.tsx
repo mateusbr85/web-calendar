@@ -8,6 +8,7 @@ interface PrivateRouterProps {
 
 export const PrivateRouter = ({ redirectTo }: PrivateRouterProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [showSpinner, setShowSpinner] = useState(true);
     const token = localStorage.getItem("token");
 
 
@@ -27,11 +28,22 @@ export const PrivateRouter = ({ redirectTo }: PrivateRouterProps) => {
 
             // Ocultar o spinner após 3 segundos
             setTimeout(() => {
+                setShowSpinner(false);
             }, 600);
         };
 
         checkAuthentication();
     }, [token]);
+
+    if(showSpinner) {
+        return(
+            <div
+                className="flex justify-center items-center"
+            >
+                <i className="fas fa-spinner fa-pulse"></i>
+            </div>
+        )
+    }
 
 
     return isAuthenticated ? <Outlet/> : <Navigate to={redirectTo} />
