@@ -19,6 +19,7 @@ export const DashboardRoutes = () => {
                 >
                     <Route path="/calendar" element={<Calendar/>} />
                 </Route>
+                <Route element={<Calendar/>}  path="/oi"/>
             </Routes>
         </BrowserRouter>
     )
