@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { NotFound } from "../pages/NotFound"
 import { LoginSignUp } from "../pages/Login"
 import { PrivateRouter } from "./private/Private.routes"
-import { Calendar } from "../pages/Calendar"
+import { CalendarPage } from "../pages/Calendar"
 
 export const DashboardRoutes = () => {
 
@@ -17,9 +17,9 @@ export const DashboardRoutes = () => {
                     element={<PrivateRouter redirectTo="/login" />} 
                     path="/calendar" 
                 >
-                    <Route path="/calendar" element={<Calendar/>} />
+                    <Route path="/calendar" element={<CalendarPage/>} />
                 </Route>
-                <Route element={<Calendar/>}  path="/oi"/>
+                <Route element={<CalendarPage/>}  path="/oi"/>
             </Routes>
         </BrowserRouter>
     )

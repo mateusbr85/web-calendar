@@ -1,6 +1,8 @@
 import { ThemeProvider } from './context/ThemeProvider';
 import { DashboardRoutes } from './routes/Dashboard.routes';
-import { SpeedInsights } from "@vercel/speed-insights/react"
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import 'rsuite/dist/rsuite.min.css';
+
 
 function App() {
 
