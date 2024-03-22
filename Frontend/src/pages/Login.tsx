@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Axios } from "../utils/axios";
 import { toast, ToastContainer } from 'react-toastify';
-import { userStore } from "../store/UserStore";
+import { userStore } from "../zustand/UserStore";
 
 export const LoginSignUp = () => {
     const location = useLocation();

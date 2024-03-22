@@ -1,30 +1,62 @@
-import { Calendar, Badge } from 'rsuite';
+import {useState} from 'react';
+import { Calendar, Badge, Modal, DatePicker } from 'rsuite';
+import { CalendarFooterMobile } from '../components/calendar/CalendarFooterMobile';
+import dayjs from 'dayjs';
 import { Input } from '../components/formFields/Input';
+import { Button } from '../components/formFields/Button';
+import { CalendarZustand } from '../zustand/CalendarZustand';
 
-function getTodoList(date: any) {
-    const day = date.getDate();
-
-    switch (day) {
-        case 10:
-            return [
-                { time: '10:30 am', title: 'Meeting' },
-                { time: '12:00 pm', title: 'Lunch' }
-            ];
-        case 15:
-            return [
-                { time: '09:30 pm', title: 'Products Introduction Meeting' },
-                { time: '12:30 pm', title: 'Client entertaining' },
-                { time: '02:00 pm', title: 'Product design discussion' },
-                { time: '05:00 pm', title: 'Product test and acceptance' },
-                { time: '06:30 pm', title: 'Reporting' },
-                { time: '10:00 pm', title: 'Going home to walk the dog' }
-            ];
-        default:
-            return [];
-    }
-}
 
 export const CalendarPage = () => {
+    const [closeModal,showModalAddEvent,setEvent,data] = CalendarZustand((zustand) => [
+        zustand.dispatch.closeModal,
+        zustand.state.showModalAddEvent,
+        zustand.dispatch.setEvent,
+        zustand.state.data
+    ])
+    const [eventValue, setEventValue] = useState(
+        {
+            event_name: '',
+            event_description: '',
+            event_date_initial: dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
+            event_date_finaly: dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss')
+
+        }
+    )
+
+
+
+    const setFormValues = ({ field, value }: { field: string; value: any }) => {
+        setEventValue({ ...eventValue, [field]: value });
+    };
+
+
+    const onSubmitValues = () => {
+
+    }
+
+    function getTodoList(date: any) {
+        const day = date.getDate();
+    
+        switch (day) {
+            case 10:
+                return [
+                    { time: '10:30 am', title: 'Meeting' },
+                    { time: '12:00 pm', title: 'Lunch' }
+                ];
+            case 15:
+                return [
+                    { time: '09:30 pm', title: 'Products Introduction Meeting' },
+                    { time: '12:30 pm', title: 'Client entertaining' },
+                    { time: '02:00 pm', title: 'Product design discussion' },
+                    { time: '05:00 pm', title: 'Product test and acceptance' },
+                    { time: '06:30 pm', title: 'Reporting' },
+                    { time: '10:00 pm', title: 'Going home to walk the dog' }
+                ];
+            default:
+                return [];
+        }
+    }
 
     function renderCell(date: any) {
         const list = getTodoList(date);
@@ -44,6 +76,55 @@ export const CalendarPage = () => {
             lg:px-20 lg:min-h-screen
             dark:bg-background_dark "
         >
+            <Modal open={showModalAddEvent} onClose={closeModal}>
+                <Modal.Header>
+                    <h2
+                        className='text-lg'
+                    >
+                        Adicionando novo Evento
+                    </h2>
+                </Modal.Header>
+                <Modal.Body
+                    className='flex flex-col gap-3 px-1'
+                >
+                    <Input 
+                        label='Nome do Evento'
+                        placeholder='Insira aqui...'
+                        onChange={(event) => setFormValues({field: 'event_name', value: event.target.value})}
+                    />
+                    <div
+                        className='flex gap-2'
+                    >
+                        <DatePicker
+                            format='HH:mm'
+                        />
+                        <DatePicker
+                            format='HH:mm'
+                        />
+                    </div>
+                    <Input 
+                        label='descrição do Evento'
+                        placeholder='Insira Aqui...'
+                        onChange={(event) => setFormValues({field: 'event_description', value: event.target.value})}
+                    />
+
+                </Modal.Body>
+                <Modal.Footer
+                    className='flex flex-row gap-3'
+                >
+                    <Button
+                        onClick={() => onSubmitValues()}
+                    >
+                        Gravar
+                    </Button>
+                    <Button
+                        variant='secondary'
+                        onClick={closeModal}
+                    >
+                        Cancelar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <div
                 className="min-h-10 flex items-center "
             >
@@ -61,33 +142,7 @@ export const CalendarPage = () => {
                     renderCell={renderCell}
                 />
             </div>
-            <div
-                className='flex  items-end h-screen py-3
-                    lg:hidden md:hidden
-                '
-            >
-                <div
-                    className='flex w-[100%] justify-between items-center '
-                >
-                    <div
-                        className='w-[80%]'
-                    >
-                        <Input
-                            label=''
-                            placeholder='Adicione o evento'
-                        />
-                    </div>
-                    <div
-                        className='w-[20%] flex items-center justify-center'
-                    >
-                        <div
-                            className='flex justify-center items-center w-12 h-12 rounded-full bg-accent_light'
-                        >
-                            <i className="fas fa-plus fa-lg text-background_light"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <CalendarFooterMobile />
         </body>
     )
 }

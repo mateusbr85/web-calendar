@@ -59,7 +59,7 @@ export const Button: React.FC<ButtonProps> = ({ children, hrefButton = '', varia
                             justify-center
                             container mx-auto
                             p-2
-                            drop-shadow-md
+                            drop-shadow-lg
                         `}
                     >
                         <div
@@ -89,7 +89,7 @@ export const Button: React.FC<ButtonProps> = ({ children, hrefButton = '', varia
                             justify-center
                             container mx-auto
                             p-2
-                            drop-shadow-md
+                            drop-shadow-lg
                         `}
                 >
                     <div

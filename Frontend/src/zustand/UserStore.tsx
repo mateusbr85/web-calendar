@@ -14,7 +14,7 @@ type UserStore = {
 
 export const userStore = create<UserStore>((set) => {
     return {
-        user: null, // Inicializa user como null em vez de um objeto vazio
+        user: null,
         setUser: (item) => set(() => ({ user: item })),
         removeUser: () => {
             set((state: any) => ({ ...state, user: null }));
