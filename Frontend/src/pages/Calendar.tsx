@@ -1,14 +1,15 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { Calendar, Badge, Modal, DatePicker } from 'rsuite';
 import { CalendarFooterMobile } from '../components/calendar/CalendarFooterMobile';
 import dayjs from 'dayjs';
 import { Input } from '../components/formFields/Input';
 import { Button } from '../components/formFields/Button';
 import { CalendarZustand } from '../zustand/CalendarZustand';
+import { Axios } from '../utils/axios';
 
 
 export const CalendarPage = () => {
-    const [closeModal,showModalAddEvent,setEvent,data] = CalendarZustand((zustand) => [
+    const [closeModal, showModalAddEvent] = CalendarZustand((zustand) => [
         zustand.dispatch.closeModal,
         zustand.state.showModalAddEvent,
         zustand.dispatch.setEvent,
@@ -22,7 +23,8 @@ export const CalendarPage = () => {
             event_date_finaly: dayjs().endOf('date').format('YYYY-MM-DD HH:mm:ss')
 
         }
-    )
+    );
+    const [loading, setLoading] = useState(false);
 
 
 
@@ -32,12 +34,27 @@ export const CalendarPage = () => {
 
 
     const onSubmitValues = () => {
+        setLoading(true)
+        Axios
+            .post('/api/v1/calendar/events/insert',
+                {
+                    data: eventValue
+                }
+            )
+            .then((response) => {
 
+            })
+            .catch((err: any) => {
+
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     function getTodoList(date: any) {
         const day = date.getDate();
-    
+
         switch (day) {
             case 10:
                 return [
@@ -87,25 +104,36 @@ export const CalendarPage = () => {
                 <Modal.Body
                     className='flex flex-col gap-3 px-1'
                 >
-                    <Input 
+                    <Input
                         label='Nome do Evento'
                         placeholder='Insira aqui...'
-                        onChange={(event) => setFormValues({field: 'event_name', value: event.target.value})}
+                        onChange={(event) => setFormValues({ field: 'event_name', value: event.target.value })}
                     />
                     <div
-                        className='flex gap-2'
+                        className='flex flex-col gap-2'
                     >
-                        <DatePicker
-                            format='HH:mm'
-                        />
-                        <DatePicker
-                            format='HH:mm'
-                        />
+                        <div
+                            className='flex flex-col gap-1 '
+                        >
+                            <label>Data inicial</label>
+                            <DatePicker
+                                format='MM/dd/yyyy HH:mm'
+
+                            />
+                        </div>
+                        <div
+                            className='flex flex-col gap-1 '
+                        >
+                            <label>Data Final</label>
+                            <DatePicker
+                                format='MM/dd/yyyy HH:mm'
+                            />
+                        </div>
                     </div>
-                    <Input 
+                    <Input
                         label='descrição do Evento'
                         placeholder='Insira Aqui...'
-                        onChange={(event) => setFormValues({field: 'event_description', value: event.target.value})}
+                        onChange={(event) => setFormValues({ field: 'event_description', value: event.target.value })}
                     />
 
                 </Modal.Body>
@@ -113,11 +141,13 @@ export const CalendarPage = () => {
                     className='flex flex-row gap-3'
                 >
                     <Button
+                        isLoading={loading}
                         onClick={() => onSubmitValues()}
                     >
                         Gravar
                     </Button>
                     <Button
+                        isLoading={loading}
                         variant='secondary'
                         onClick={closeModal}
                     >
@@ -136,6 +166,7 @@ export const CalendarPage = () => {
                 "
             >
                 <Calendar
+
                     compact
                     bordered
                     onSelect={() => alert('clieuqe')}

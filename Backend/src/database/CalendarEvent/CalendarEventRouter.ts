@@ -1,4 +1,5 @@
 import { isAdapterEvents } from "@src/plugins/databse/adapter/isAdapterEvents";
+import { CalendarEventController } from './CalendarEventController';
 
 export class CalendarEventRouter extends isAdapterEvents {
     constructor() {
@@ -7,7 +8,9 @@ export class CalendarEventRouter extends isAdapterEvents {
     }
 
     protected initializeRoutes(): void {
-        console.log()
+        this.router.post('/calendar/events/insert', async (req, res) => {
+            await CalendarEventController.insert(req, res)
+        })
     }
 
 }
